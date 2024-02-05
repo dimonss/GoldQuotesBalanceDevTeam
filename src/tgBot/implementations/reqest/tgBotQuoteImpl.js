@@ -199,7 +199,7 @@ class TgBotQuoteImpl {
                 client.map((item) => {
                     this.bot.sendMessage(
                         this.chatId,
-                        item.text + " " + item?.chatIdKey,
+                        item.text,
                     );
                 });
             });

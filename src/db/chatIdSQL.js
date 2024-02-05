@@ -8,9 +8,11 @@ class ChatIdSQL {
     static all(cb) {
         chats.all('SELECT * FROM chatId', cb);
     }
+
     static getChatIdKeyByChatId(chatId, cb) {
-        chats.get(`SELECT id FROM chatId WHERE chatId = ?`, chatId, cb);
+        chats.get(`SELECT id FROM chatId WHERE chatId = ${chatId}`, cb);
     }
+
     static find(id, cb) {
         chats.get('SELECT * FROM chatId WHERE id = ?', id, cb);
     }
@@ -36,6 +38,7 @@ class ChatIdSQL {
     static chatExist(chatId, cb) {
         chats.get(`SELECT id FROM chatId WHERE chatId = ${chatId}`, cb);
     }
+
     static add(chatId, cb) {
         chats.run(`INSERT INTO chatId (chatId) VALUES ("${chatId}")`, cb);
     }
