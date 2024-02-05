@@ -5,16 +5,18 @@ import {STATUS} from './constants.js';
 import tgBot from './tgBot/tgBot.js';
 import {checkAuth} from './utils/commonUtils.js';
 import dotenv from 'dotenv';
+import chatIdSQL from "./db/chatIdSQL.js";
 
 dotenv.config();
 
 const HOSTNAME = process.env.HOSTNAME;
 export const TG_TOKEN = process.env.TG_TOKEN;
 export const AUTH = process.env.AUTH;
+export const BOT_NAME = process.env.BOT_NAME;
 const PORT = process.env.PORT || 4000;
 
 const app = express();
-export const bot = tgBot(TG_TOKEN);
+tgBot(TG_TOKEN);
 const startApp = async () => {
     try {
         app.listen(PORT, HOSTNAME, () => {
@@ -43,6 +45,16 @@ const startApp = async () => {
                 },
                 req?.query?.search,
                 req?.query?.categoryId,
+            );
+        }
+    });
+    app.get('/chats', (req, res, next) => {
+        if (checkAuth(req, res)) {
+            chatIdSQL.all(
+                (error, product) => {
+                    if (error) return next(error);
+                    res.json(commonDto(STATUS.OK, 'success', product));
+                },
             );
         }
     });

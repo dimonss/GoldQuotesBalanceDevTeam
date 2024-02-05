@@ -1,6 +1,5 @@
 import {MY_LOGO_STICKER} from '../../../constants.js';
 import ChatIdSQL from '../../../db/chatIdSQL.js';
-import {COMMAND} from '../../constants/tgBotConstants.js';
 import QuoteSQL from "../../../db/quoteSQL.js";
 import strings from "../../../constants/strings.js";
 
@@ -49,15 +48,15 @@ class TgBotUtilsImpl {
             } else {
                 await this.bot.sendMessage(
                     this.chatId,
-                    `Вы не идентифицированный пользователь\nДля идентификации используйте команду: ` + COMMAND.START,
+                    `У вас нет цитат`,
                 );
             }
         });
     }
 
-    async errorRequest() {
-        await this.bot.sendMessage(this.chatId, `Я тебя не понимаю... Попробуй еще раз!`);
-    }
+    // async errorRequest() {
+    //     await this.bot.sendMessage(this.chatId, `Я тебя не понимаю... Попробуй еще раз!`);
+    // }
 }
 
 export default TgBotUtilsImpl;

@@ -4,6 +4,7 @@ import TgBotQuoteImpl from './implementations/reqest/tgBotQuoteImpl.js';
 import TgBotUtilsImpl from './implementations/reqest/tgBotUtilsImpl.js';
 import TgBotQuotaCallback from "./implementations/buttonsCallback/tgBotQuotaCallback.js";
 import tgBotUtilCallback from "./implementations/buttonsCallback/tgBotUtilCallback.js";
+import {BOT_NAME} from "../index.js";
 
 
 const tgBot = (token) => {
@@ -26,27 +27,26 @@ const tgBot = (token) => {
             await quotes.find();
             return;
         }
-        -1001496887488
         if (text?.slice(0, 7) === COMMAND.DELETE) {
             await quotes.deleteQuote();
             return;
         }
-        if (text === COMMAND.GET_RAND_QUOTE) {
+        if (text === COMMAND.GET_RAND_QUOTE || text === COMMAND.GET_RAND_QUOTE + BOT_NAME) {
             await quotes.getRandom();
             return;
         }
 
         //COMMON////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        if (text === COMMAND.START) {
+        if (text === COMMAND.START || text === COMMAND.START + BOT_NAME) {
             await utils.start();
             return;
         }
-        if (text === COMMAND.INFO) {
+        if (text === COMMAND.INFO || text === COMMAND.INFO + BOT_NAME) {
             await utils.info()
             return;
         }
-        if (text === COMMAND.CHAT_ID) {
+        if (text === COMMAND.CHAT_ID || text === COMMAND.CHAT_ID + BOT_NAME) {
             await utils.getChatId()
         }
     });

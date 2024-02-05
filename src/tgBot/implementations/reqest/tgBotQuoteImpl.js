@@ -4,6 +4,7 @@ import ChatIdSQL from "../../../db/chatIdSQL.js";
 import quoteSQL from "../../../db/quoteSQL.js";
 import chatIdSQL from "../../../db/chatIdSQL.js";
 import strings from "../../../constants/strings.js";
+import {BOT_NAME} from "../../../index.js";
 
 class TgBotQuoteImpl {
     constructor(bot, msg) {
@@ -13,7 +14,10 @@ class TgBotQuoteImpl {
     }
 
     async add() {
-        const QuoteAndAuthor = this.text.split("©")
+        let tetForAdd = this.text.replace('#Цитата', '')
+        tetForAdd = tetForAdd.replace('#цитата', '')
+        tetForAdd = tetForAdd.replace(BOT_NAME, '')
+        const QuoteAndAuthor = tetForAdd.split("©")
         try {
             if (QuoteAndAuthor[0].length < 9) {
                 await this.bot.sendMessage(
@@ -32,7 +36,7 @@ class TgBotQuoteImpl {
             const addQuote = () => {
                 ChatIdSQL.chatExist(this.chatId, async (error, data) => {
                     if (data?.id) {
-                        quoteSQL.create({text: this.text, chatIdKey: data?.id}, async (error) => {
+                        quoteSQL.create({text: tetForAdd, chatIdKey: data?.id}, async (error) => {
                             if (!error) {
                                 await this.bot.sendMessage(
                                     this.chatId,
@@ -72,6 +76,7 @@ class TgBotQuoteImpl {
 
     async find() {
         const searchText = this.text[7] === ' ' ? this.text.slice(8) : this.text.slice(7);
+        searchText.replace(BOT_NAME, '');
         if (!searchText?.length) {
             await this.bot.sendMessage(
                 this.chatId,
