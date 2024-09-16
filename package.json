@@ -9,7 +9,7 @@
   },
   "scripts": {
     "start:dev": "nodemon src/index.js",
-    "start:prod": "node build/index.js",
+    "start:prod": "node src/index.js",
     "build": "rimraf ./build && npx tsc",
     "start": "npm run build && node build/main",
     "lint": "npx eslint ./src",
