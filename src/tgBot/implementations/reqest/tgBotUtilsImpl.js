@@ -9,24 +9,26 @@ class TgBotUtilsImpl {
         this.chatId = msg?.chat?.id;
         this.text = msg.text;
         this.msg = msg;
+        this.message_thread_id = msg?.message_thread_id ? {message_thread_id: msg?.message_thread_id} : {};
     }
 
     async getChatId() {
-        await this.bot.sendMessage(this.chatId, this.chatId);
+        await this.bot.sendMessage(this.chatId, this.chatId, this.message_thread_id);
     }
 
     async start() {
-        await this.bot.sendSticker(this.chatId, MY_LOGO_STICKER);
+        await this.bot.sendSticker(this.chatId, MY_LOGO_STICKER, this.message_thread_id);
         await this.bot.sendMessage(
             this.chatId,
             `Добро пожаловать! =) \nЗдесь можно оставлять цитаты!\nДля того чтоб добавить цитату отправьте ее в чат с пометкой "©" и именем правообладателя, например ©Генадий Пупкин`,
+            this.message_thread_id,
         );
     }
 
     async info() {
         ChatIdSQL.findByChatId(this.msg.from.id, async (error, data) => {
             if (error) {
-                await this.bot.sendMessage(this.chatId, `Ваши данные не найдены`);
+                await this.bot.sendMessage(this.chatId, `Ваши данные не найдены`, this.message_thread_id);
                 return;
             }
             if (data) {
@@ -35,13 +37,16 @@ class TgBotUtilsImpl {
                         await this.bot.sendMessage(
                             this.chatId,
                             strings.ups,
+                            this.message_thread_id,
                         );
                         return;
                     }
                     await this.bot.sendMessage(
                         this.chatId,
                         `Количество цитат: <b>${data['COUNT(chatIdKey)']}</b>`,
-                        {parse_mode: 'HTML'},
+                        {
+                            parse_mode: 'HTML', ...this.message_thread_id,
+                        },
                     );
                 })
 
@@ -49,6 +54,8 @@ class TgBotUtilsImpl {
                 await this.bot.sendMessage(
                     this.chatId,
                     `У вас нет цитат`,
+                    this.message_thread_id,
+
                 );
             }
         });

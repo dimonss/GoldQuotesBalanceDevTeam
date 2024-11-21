@@ -11,6 +11,7 @@ class TgBotQuoteImpl {
         this.bot = bot;
         this.chatId = msg?.chat?.id;
         this.text = msg.text;
+        this.message_thread_id = msg?.message_thread_id ? {message_thread_id: msg?.message_thread_id} : {};
     }
 
     async add() {
@@ -23,6 +24,7 @@ class TgBotQuoteImpl {
                 await this.bot.sendMessage(
                     this.chatId,
                     `Цитата слишком коротка.😞\nНе смог сохранить`,
+                      this.message_thread_id,
                 );
                 return
             }
@@ -30,6 +32,7 @@ class TgBotQuoteImpl {
                 await this.bot.sendMessage(
                     this.chatId,
                     `Имя автора цитаты слишком коротко.😞\nНе смог сохранить`,
+                      this.message_thread_id,
                 );
                 return
             }
@@ -41,11 +44,13 @@ class TgBotQuoteImpl {
                                 await this.bot.sendMessage(
                                     this.chatId,
                                     `Цитата добавлена!`,
+                                      this.message_thread_id,
                                 );
                             } else {
                                 await this.bot.sendMessage(
                                     this.chatId,
                                     strings.ups,
+                                      this.message_thread_id,
                                 );
                             }
                         })
@@ -55,6 +60,7 @@ class TgBotQuoteImpl {
                                 await this.bot.sendMessage(
                                     this.chatId,
                                     strings.ups,
+                                      this.message_thread_id,
                                 );
                             } else {
                                 addQuote();
@@ -69,6 +75,7 @@ class TgBotQuoteImpl {
             await this.bot.sendMessage(
                 this.chatId,
                 strings.ups,
+                  this.message_thread_id,
             );
         }
     }
@@ -81,34 +88,37 @@ class TgBotQuoteImpl {
             await this.bot.sendMessage(
                 this.chatId,
                 `Не увидел текст для поиска, напишите текст для поиска сразу после команды.`,
+                  this.message_thread_id,
             );
             return;
         }
         chatIdSQL.getChatIdKeyByChatId(this?.chatId, async (error, chat) => {
             if (error) {
-                await this.bot.sendMessage(this.chatId, 'error');
+                await this.bot.sendMessage(this.chatId, 'error', this.message_thread_id,);
                 return;
             }
             if (!chat) {
                 this.bot.sendMessage(
                     this.chatId,
                     "У вас еще нет сохраненных цитат",
+                    this.message_thread_id,
                 );
                 return;
             }
             QuoteSQL.findWithLimit(searchText, chat?.id, async (error, quotas) => {
                 if (error) {
-                    await this.bot.sendMessage(this.chatId, strings.ups);
+                    await this.bot.sendMessage(this.chatId, strings.ups, this.message_thread_id,);
                     return;
                 }
                 if (!quotas.length) {
-                    await this.bot.sendMessage(this.chatId, 'Ничего не найдено ☹️');
+                    await this.bot.sendMessage(this.chatId, 'Ничего не найдено ☹️', this.message_thread_id,);
 
                 }
                 quotas.forEach((item) => {
                     this.bot.sendMessage(
                         this.chatId,
                         `${item.text}\n`,
+                        this.message_thread_id,
                     );
                 });
             });
@@ -121,34 +131,36 @@ class TgBotQuoteImpl {
             await this.bot.sendMessage(
                 this.chatId,
                 `Не увидел текст для поиска, напишите текст для поиска сразу после команды.`,
+                this.message_thread_id,
             );
             return;
         }
         chatIdSQL.getChatIdKeyByChatId(this?.chatId, async (error, chat) => {
             if (error) {
-                await this.bot.sendMessage(this.chatId, 'error');
+                await this.bot.sendMessage(this.chatId, 'error', this.message_thread_id,);
                 return;
             }
             if (!chat) {
                 this.bot.sendMessage(
                     this.chatId,
                     "У вас еще нет сохраненных цитат",
+                    this.message_thread_id,
                 );
                 return;
             }
             QuoteSQL.findWithLimit(searchText, chat?.id, async (error, quotas) => {
                 if (error) {
-                    await this.bot.sendMessage(this.chatId, strings.ups);
+                    await this.bot.sendMessage(this.chatId, strings.ups, this.message_thread_id,);
                     return;
                 }
                 if (!quotas.length) {
-                    await this.bot.sendMessage(this.chatId, 'Ничего не найдено ☹️');
+                    await this.bot.sendMessage(this.chatId, 'Ничего не найдено ☹️', this.message_thread_id,);
 
                 }
                 this.bot.sendMessage(
                     this.chatId,
                     "Какую цитату удалить?",
-                    {
+                    {...this.message_thread_id,
                         reply_markup: JSON.stringify({
                             inline_keyboard: [
                                 ...quotas.map((item) => [{
@@ -181,25 +193,27 @@ class TgBotQuoteImpl {
     async getRandom() {
         ChatIdSQL.getChatIdKeyByChatId(this?.chatId, async (error, chat) => {
             if (error) {
-                await this.bot.sendMessage(this.chatId, 'error');
+                await this.bot.sendMessage(this.chatId, 'error', this.message_thread_id,);
                 return;
             }
             if (!chat) {
                 this.bot.sendMessage(
                     this.chatId,
                     "У вас еще нет сохраненных цитат",
+                    this.message_thread_id,
                 );
                 return;
             }
             QuoteSQL.getRandom(chat.id, async (error, client) => {
                 if (error) {
-                    await this.bot.sendMessage(this.chatId, 'error');
+                    await this.bot.sendMessage(this.chatId, 'error', this.message_thread_id,);
                     return;
                 }
                 client.map((item) => {
                     this.bot.sendMessage(
                         this.chatId,
                         item.text,
+                        this.message_thread_id,
                     );
                 });
             });
