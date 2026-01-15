@@ -10,7 +10,6 @@
   "scripts": {
     "start:dev": "nodemon src/index.js",
     "start:prod": "pm2 start src/index.js --name GoldenQuotes",
-
     "build": "rimraf ./build && npx tsc",
     "start": "npm run build && node build/main",
     "lint": "npx eslint ./src",
