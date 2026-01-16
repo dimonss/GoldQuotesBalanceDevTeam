@@ -17,9 +17,12 @@ const SQLQueries = {
     (
     id INTEGER PRIMARY KEY AUTOINCREMENT, 
     text TEXT NOT NULL, 
-    chatIdKey TEXT NOT NULL
+    chatIdKey TEXT NOT NULL,
+    sender TEXT
     )
     `,
+    // ADD SENDER COLUMN
+    add_sender_column: `ALTER TABLE quote ADD COLUMN sender TEXT`,
 };
 
 const db = new sqlite3.Database(dbName);

@@ -1,20 +1,21 @@
 import sqlite3 from 'sqlite3';
-import {getAndSqlReq} from '../utils/commonUtils.js';
+import { getAndSqlReq } from '../utils/commonUtils.js';
 
 sqlite3.verbose();
 const dbName = 'db.sqlite';
 const quoteSQL = new sqlite3.Database(dbName);
 
-const userAvailableKeys = 'text, chatIdKey';
+const userAvailableKeys = 'text, chatIdKey, sender';
 
 class QuoteSQL {
     static create(data, cb) {
         const sql =
-            'INSERT INTO quote(text, chatIdKey) VALUES (?,?)';
+            'INSERT INTO quote(text, chatIdKey, sender) VALUES (?,?,?)';
         quoteSQL.run(
             sql,
             data.text,
             data.chatIdKey,
+            data.sender,
             cb,
         );
     }
@@ -25,8 +26,7 @@ class QuoteSQL {
 
     static all(cb, searchText = '', categoryId) {
         quoteSQL.all(
-            `SELECT ${userAvailableKeys} FROM quote WHERE ${getAndSqlReq(searchText)}${
-                categoryId ? ' AND categoryId =' + categoryId : ''
+            `SELECT ${userAvailableKeys} FROM quote WHERE ${getAndSqlReq(searchText)}${categoryId ? ' AND categoryId =' + categoryId : ''
             } ORDER BY id DESC`,
             cb,
         );
@@ -53,6 +53,7 @@ class QuoteSQL {
             'UPDATE quote SET ' +
             `${data?.chatIdKey ? 'chatIdKey = ' + data?.chatIdKey + ', ' : ''}` +
             `${data?.text ? 'text = "' + data?.text + '", ' : ''}` +
+            `${data?.sender ? 'sender = "' + data?.sender + '", ' : ''}` +
             `WHERE id = ${data.id}`;
         sql = sql.replace(', WHERE id = ', ' WHERE id = ');
         quoteSQL.run(sql, cb);

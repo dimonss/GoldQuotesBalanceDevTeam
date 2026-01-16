@@ -1,17 +1,20 @@
 import QuoteSQL from '../../../db/quoteSQL.js';
-import {BUTTON_COMMANDS} from '../../constants/tgBotConstants.js';
+import { BUTTON_COMMANDS } from '../../constants/tgBotConstants.js';
 import ChatIdSQL from "../../../db/chatIdSQL.js";
 import quoteSQL from "../../../db/quoteSQL.js";
 import chatIdSQL from "../../../db/chatIdSQL.js";
 import strings from "../../../constants/strings.js";
-import {BOT_NAME} from "../../../index.js";
+import { BOT_NAME } from "../../../index.js";
 
 class TgBotQuoteImpl {
     constructor(bot, msg) {
         this.bot = bot;
         this.chatId = msg?.chat?.id;
         this.text = msg.text;
-        this.message_thread_id = msg?.message_thread_id ? {message_thread_id: msg?.message_thread_id} : {};
+        this.message_thread_id = msg?.message_thread_id ? { message_thread_id: msg?.message_thread_id } : {};
+        // Данные отправителя цитаты
+        const from = msg?.from;
+        this.sender = from?.username || [from?.first_name, from?.last_name].filter(Boolean).join(' ') || null;
     }
 
     async add() {
@@ -24,7 +27,7 @@ class TgBotQuoteImpl {
                 await this.bot.sendMessage(
                     this.chatId,
                     `Цитата слишком коротка.😞\nНе смог сохранить`,
-                      this.message_thread_id,
+                    this.message_thread_id,
                 );
                 return
             }
@@ -32,25 +35,25 @@ class TgBotQuoteImpl {
                 await this.bot.sendMessage(
                     this.chatId,
                     `Имя автора цитаты слишком коротко.😞\nНе смог сохранить`,
-                      this.message_thread_id,
+                    this.message_thread_id,
                 );
                 return
             }
             const addQuote = () => {
                 ChatIdSQL.chatExist(this.chatId, async (error, data) => {
                     if (data?.id) {
-                        quoteSQL.create({text: tetForAdd, chatIdKey: data?.id}, async (error) => {
+                        quoteSQL.create({ text: tetForAdd, chatIdKey: data?.id, sender: this.sender }, async (error) => {
                             if (!error) {
                                 await this.bot.sendMessage(
                                     this.chatId,
                                     `Цитата добавлена!`,
-                                      this.message_thread_id,
+                                    this.message_thread_id,
                                 );
                             } else {
                                 await this.bot.sendMessage(
                                     this.chatId,
                                     strings.ups,
-                                      this.message_thread_id,
+                                    this.message_thread_id,
                                 );
                             }
                         })
@@ -60,7 +63,7 @@ class TgBotQuoteImpl {
                                 await this.bot.sendMessage(
                                     this.chatId,
                                     strings.ups,
-                                      this.message_thread_id,
+                                    this.message_thread_id,
                                 );
                             } else {
                                 addQuote();
@@ -75,7 +78,7 @@ class TgBotQuoteImpl {
             await this.bot.sendMessage(
                 this.chatId,
                 strings.ups,
-                  this.message_thread_id,
+                this.message_thread_id,
             );
         }
     }
@@ -88,7 +91,7 @@ class TgBotQuoteImpl {
             await this.bot.sendMessage(
                 this.chatId,
                 `Не увидел текст для поиска, напишите текст для поиска сразу после команды.`,
-                  this.message_thread_id,
+                this.message_thread_id,
             );
             return;
         }
@@ -160,7 +163,8 @@ class TgBotQuoteImpl {
                 this.bot.sendMessage(
                     this.chatId,
                     "Какую цитату удалить?",
-                    {...this.message_thread_id,
+                    {
+                        ...this.message_thread_id,
                         reply_markup: JSON.stringify({
                             inline_keyboard: [
                                 ...quotas.map((item) => [{
