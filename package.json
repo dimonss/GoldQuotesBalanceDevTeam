@@ -37,7 +37,9 @@
     "express": "^4.18.2",
     "node-telegram-bot-api": "^0.61.0",
     "request": "^2.88.2",
-    "sqlite3": "^5.1.6"
+    "sqlite3": "^5.1.6",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
     "eslint": "^8.47.0",

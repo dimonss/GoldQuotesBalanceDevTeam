@@ -1,11 +1,13 @@
 import express from 'express';
+import swaggerUi from 'swagger-ui-express';
 import QuoteSQL from './db/quoteSQL.js';
-import {commonDto} from './DTO/common.js';
-import {STATUS} from './constants.js';
+import { commonDto } from './DTO/common.js';
+import { STATUS } from './constants.js';
 import tgBot from './tgBot/tgBot.js';
-import {checkAuth} from './utils/commonUtils.js';
+import { checkAuth } from './utils/commonUtils.js';
 import dotenv from 'dotenv';
 import chatIdSQL from "./db/chatIdSQL.js";
+import { swaggerSpec } from './swagger/config.js';
 
 dotenv.config();
 
@@ -33,6 +35,9 @@ const startApp = async () => {
         res.append('Access-Control-Allow-Headers', 'Content-Type,Auth,auth');
         next();
     });
+
+    // Swagger UI
+    app.use('/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
     //QUOTE/////////////////////////////////////////////;
 
