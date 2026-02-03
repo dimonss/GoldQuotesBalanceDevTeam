@@ -16,6 +16,10 @@ const options = {
                 url: 'http://localhost:4000',
                 description: 'Development server',
             },
+            {
+                url: 'https://chalysh.pro/quote_api',
+                description: 'Production server',
+            },
         ],
         components: {
             securitySchemes: {
