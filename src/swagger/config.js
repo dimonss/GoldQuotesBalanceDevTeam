@@ -26,7 +26,7 @@ const options = {
                 AuthHeader: {
                     type: 'apiKey',
                     in: 'header',
-                    name: 'Auth',
+                    name: 'authorization',
                     description: 'Authorization header',
                 },
             },
