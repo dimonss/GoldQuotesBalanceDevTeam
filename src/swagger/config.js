@@ -13,13 +13,13 @@ const options = {
         },
         servers: [
             {
-                url: 'http://localhost:4000',
-                description: 'Development server',
-            },
-            {
                 url: 'https://chalysh.pro/quote_api',
                 description: 'Production server',
             },
+            {
+                url: 'http://localhost:4000',
+                description: 'Development server',
+            }
         ],
         components: {
             securitySchemes: {
