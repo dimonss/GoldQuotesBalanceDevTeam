@@ -9,7 +9,7 @@
   },
   "scripts": {
     "start:dev": "nodemon src/index.js",
-    "start:prod": "pm2 start src/index.js --name GoldenQuotes",
+    "start:prod": "pm2 start src/index.js --name GoldenQuotes --interpreter /root/.nvm/versions/node/v24.22.1/bin/node",
     "build": "rimraf ./build && npx tsc",
     "start": "npm run build && node build/main",
     "lint": "npx eslint ./src",
